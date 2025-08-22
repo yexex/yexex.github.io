@@ -1,0 +1,21 @@
+{
+"companyName": "Mofunzone",
+"productName": "Duck Life 4",
+"dataUrl": "https://tbg95.pages.dev/ducklife-4/WebGL4PokiNew.data.unityweb",
+"asmCodeUrl": "https://tbg95.pages.dev/ducklife-4/WebGL4PokiNew.asm.code.unityweb",
+"asmMemoryUrl": "https://tbg95.pages.dev/ducklife-4/WebGL4PokiNew.asm.memory.unityweb",
+"asmFrameworkUrl": "WebGL4PokiNew.asm.framework.unityweb",
+"TOTAL_MEMORY": 268435456,
+"graphicsAPI": ["WebGL 2.0", "WebGL 1.0"],
+"webglContextAttributes": {"preserveDrawingBuffer": false},
+"backgroundUrl": "WebGL4PokiNew.jpg",
+"splashScreenStyle": "Dark",
+"backgroundColor": "#FFFFFF",
+"cacheControl": {"default": "must-revalidate"},
+"totalFile": 3,
+"size": 69236949,
+"split_size": 23078983,
+"totalFileCode": 2,
+"size_code": 36005644,
+"split_size_code": 18002822
+}

@@ -1,0 +1,286 @@
+<html>
+  <head>
+    <script type="text/javascript">
+      /**
+       * Game config
+       */
+      window.config = {
+        debug: false,
+        maxRatio: 16 / 9,
+        minRatio: 9 / 16,
+        numScreenshots: 3,
+        unityWebglBuildUrl: 'Build/WebGL4PokiNew.json',
+        unityWebglLoaderUrl: 'Build/UnityLoader.js'
+      };
+      window.alert = function() {};
+      // or simply
+      alert = function() {};
+    </script>
+    <meta charset="utf-8">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <title>Duck Life 4</title>
+    <meta name="description" content="Raise a duck to become a professional racer! You can choose an egg to hatch, and customize its appearance. The running trainer can help improve your speed, endurance, and reaction stats. When your duck is ready, compete in race tournaments!">
+    <script type="text/javascript" src="/cloak.js"></script>
+  <meta name="robots" content="noindex,nofollow" />
+    <link rel="stylesheet" type="text/css" href="style.css">
+    <script type="text/javascript" src="/poki-sdk.js"></script>
+    <script src="/poki-sdk-core-v2.263.0.js" type="text/javascript" crossorigin="anonymous"></script>
+    <style>
+      .pokiSdkContainer {
+        overflow: hidden;
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        z-index: 1000;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .pokiSdkContainer.pokiSdkFixed {
+        position: fixed;
+      }
+
+      .pokiSdkContainer.pokiSdkVisible {
+        display: block;
+      }
+
+      .pokiSdkContainer.pokiSdkHidden,
+      .pokiSdkSpinnerContainer.pokiSdkHidden {
+        display: none;
+      }
+
+      .pokiSdkContainer.pokiSdkHidden,
+      .pokiSdkSpinnerContainer {
+        pointer-events: none;
+      }
+
+      .pokiSdkSpinnerContainer {
+        z-index: 10;
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: url('https://a.poki.com/images/thumb_anim_2x.gif') 50% 50% no-repeat;
+        user-select: none;
+      }
+
+      .pokiSdkInsideContainer {
+        background: #000;
+        position: relative;
+        z-index: 1;
+        width: 100%;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        opacity: 0;
+        -webkit-transition: opacity 0.5s ease-in-out;
+        -moz-transition: opacity 0.5s ease-in-out;
+        -ms-transition: opacity 0.5s ease-in-out;
+        -o-transition: opacity 0.5s ease-in-out;
+        transition: opacity 0.5s ease-in-out;
+      }
+
+      .pokiSdkContainer.pokiSdkVisible .pokiSdkInsideContainer {
+        opacity: 1;
+      }
+
+      .pokiSDKAdContainer,
+      .pokiSdkVideoContainer {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+      }
+
+      .pokiSdkStartAdButton {
+        position: absolute;
+        z-index: 9999;
+        top: 0;
+        padding-top: 10%;
+        width: 100%;
+        height: 100%;
+        text-align: center;
+        color: #FFF;
+        font: 700 15pt 'Arial', sans-serif;
+        font-weight: bold;
+        letter-spacing: 1px;
+        transition: 0.1s ease-in-out;
+        line-height: 1em;
+      }
+
+      .pokiSdkPauseButton {
+        cursor: pointer;
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        z-index: 1;
+      }
+
+      .pokiSdkPauseButton:before {
+        content: '';
+        position: absolute;
+        width: 100px;
+        height: 100px;
+        display: block;
+        border: 2px solid #fff;
+        border-radius: 50%;
+        user-select: none;
+        background-color: rgba(0, 0, 0, 0.6);
+        transition: background-color 0.5s ease;
+        animation: 1s linear infinite pulse;
+      }
+
+      .pokiSdkPauseButton:after {
+        content: '';
+        position: absolute;
+        display: block;
+        box-sizing: border-box;
+        border-color: transparent transparent transparent #fff;
+        border-style: solid;
+        border-width: 26px 0 26px 40px;
+        pointer-events: none;
+        animation: 1s linear infinite pulse;
+        left: 6px;
+      }
+
+      .pokiSdkPauseButtonBG {
+        position: fixed;
+        top: 0;
+        left: 0;
+        display: block;
+        content: '';
+        background: rgba(0, 43, 80, 0.5);
+        width: 100%;
+        height: 100%;
+      }
+
+      .pokiSdkPauseButtonBG:hover {
+        background: rgba(0, 43, 80, 0.7);
+      }
+
+      @keyframes pulse {
+        0% {
+          transform: translate(-50%, -50%) scale(0.95);
+        }
+
+        70% {
+          transform: translate(-50%, -50%) scale(1.1);
+        }
+
+        100% {
+          transform: translate(-50%, -50%) scale(0.95);
+        }
+      }
+
+      .pokiSdkProgressContainer {
+        background: #B8C7DD;
+        width: 100%;
+        height: 5px;
+        position: absolute;
+        bottom: 0;
+        z-index: 9999;
+      }
+
+      .pokiSdkProgressBar {
+        position: relative;
+        bottom: 0px;
+        background: #FFDC00;
+        height: 100%;
+        width: 0%;
+        transition: width 0.5s;
+        transition-timing-function: linear;
+      }
+
+      .pokiSdkProgressBar.pokiSdkVisible,
+      .pokiSdkPauseButton.pokiSdkVisible,
+      .pokiSdkStartAdButton.pokiSdkVisible {
+        display: block;
+        pointer-events: auto;
+      }
+
+      .pokiSdkProgressBar.pokiSdkHidden,
+      .pokiSdkPauseButton.pokiSdkHidden,
+      .pokiSdkStartAdButton.pokiSdkHidden {
+        display: none;
+        pointer-events: none;
+      }
+    </style>
+  </head>
+  <body>
+    
+    <div id="loader" style="display: none;">
+      <div id="slideshow" class="active">
+        <div id="slideshow-top" class="active">
+          <img alt="Duck Life 4" title="Duck Life 4" src="thumbnail.jpg" id="thumbnail">
+          <div id="slideshow-top-container">
+            <div id="game-title">
+              <h1>Duck Life 4 Unblocked</h1>
+            </div>
+            <div id="progress-container" class="done">
+              <div id="progress-bar">
+                <div id="progress-fill" style="width: 100%;"></div>
+              </div>
+              <div id="progress-amount">100%</div>
+            </div>
+          </div>
+        </div>
+        <div id="slideshow-images">
+          <div class="image right" fullimageloaded="true" data-idx="0">
+            <img src="https://game-cdn.poki.com/v4/ducklife4/screenshots/1.jpg">
+          </div>
+          <div class="image left" data-idx="1" fullimageloaded="true">
+            <img src="https://game-cdn.poki.com/v4/ducklife4/screenshots/2.jpg">
+          </div>
+          <div class="image middle" data-idx="2" fullimageloaded="true">
+            <img src="https://game-cdn.poki.com/v4/ducklife4/screenshots/3.jpg">
+          </div>
+        </div>
+        <div id="slideshow-nav">
+          <div class="bullet" data-idx="0"></div>
+          <div class="bullet" data-idx="1"></div>
+          <div class="bullet active" data-idx="2"></div>
+        </div>
+      </div>
+    </div>
+    <div id="game-container" style="width: 640px; height: 360px; margin-left: -320px; margin-top: -180px; display: block;">
+      <div id="game" style="padding: 0px; margin: 0px; border: 0px; position: relative; background: url(&quot;Build/WebGL4PokiNew.jpg&quot;) center center / cover;">
+        <canvas id="#canvas" width="640" height="360" style="cursor: default;"></canvas>
+      </div>
+    </div>
+    <script type="text/javascript" src="scripts/poki-unity-loader.js"></script>
+    <style>
+      #slideshow-images {
+        height: 70vh;
+      }
+
+      #slideshow-images .image {
+        transition-duration: 0.5s;
+        width: 52.5vw;
+        height: 70vh;
+      }
+
+      #slideshow-images .middle {
+        transform: translateX(23.75vw);
+      }
+
+      #slideshow-images .left {
+        transform: translateX(-23.500000000000004vw) scale(0.8);
+      }
+
+      #slideshow-images .right {
+        transform: translateX(71vw) scale(0.8);
+      }
+
+      #slideshow-images .inactive.fromLeft {
+        transform: translateX(-52.5vw) scale(0.4);
+      }
+
+      #slideshow-images .inactive.fromRight {
+        transform: translateX(126.25vw) scale(0.4);
+      }
+    </style>
+  </body>
+</html>
